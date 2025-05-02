@@ -1,12 +1,9 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from fastapi import Request
-
-MONGO_URL = "mongodb://localhost:27017"
-DB_NAME = "server_monitoring"
+from app.core.config import MONGO_URL, DATABASE_NAME
 
 def get_client():
     return AsyncIOMotorClient(MONGO_URL)
 
 def get_db():
     client = get_client()
-    return client[DB_NAME]
+    return client[DATABASE_NAME]

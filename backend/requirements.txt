@@ -9,6 +9,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
 cryptography==44.0.2
+dnspython==2.7.0
 fastapi==0.115.12
 h11==0.16.0
 idna==3.10
@@ -16,10 +17,13 @@ Jinja2==3.1.6
 jmespath==1.0.1
 MarkupSafe==3.0.2
 moto==5.1.4
+motor==3.7.0
 pycparser==2.22
 pydantic==2.11.4
 pydantic_core==2.33.2
+pymongo==4.12.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.0
 PyYAML==6.0.2
 requests==2.32.3
 responses==0.25.7

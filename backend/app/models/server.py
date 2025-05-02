@@ -10,6 +10,5 @@ class ServerModel(BaseModel):
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {
-            # برای نمایش درست ObjectId در خروجی
             str: lambda v: str(v)
         }
