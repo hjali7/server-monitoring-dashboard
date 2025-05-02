@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.models.server import ServerModel
 from app.db.mongo import get_db
 from bson import ObjectId
+from app.utils.ping import ping
 
 router = APIRouter(prefix="/servers", tags=["Servers"])
 
@@ -48,3 +49,12 @@ async def delete_server(server_id: str):
     result = await db.servers.delete_one({"_id": ObjectId(server_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Server not found")
+    
+@router.get("/{server_id}/status")
+async def get_server_status(server_id: str):
+    db = get_db()
+    server = await db.servers.find_one({"_id": ObjectId(server_id)})
+    if not server:
+        raise HTTPException(status_code=404, detail="Server not found")
+    is_online = await ping(server["ip"])
+    return {"server_id": server_id, "ip": server["ip"], "online": is_online}
