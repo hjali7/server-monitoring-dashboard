@@ -1,28 +1,51 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ServerList from "../components/ServerList";
-
-// داده تستی اولیه 
-const mockServers = [
-  { id: 1, name: "Server A", ip: "192.168.1.1", status: "online" },
-  { id: 2, name: "Server B", ip: "192.168.1.2", status: "offline" },
-  { id: 3, name: "Server C", ip: "10.0.0.1", status: "online" },
-];
+import Link from "next/link";
 
 export default function HomePage() {
-  const [servers, setServers] = useState(mockServers);
+  const [servers, setServers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // برای اتصال به بک‌اند بعداً این بخش را کامل می‌کنیم
-  // useEffect(() => {
-  //   fetch('/api/servers')
-  //     .then(res => res.json())
-  //     .then(setServers);
-  // }, []);
+  // دریافت لیست سرورها
+  const fetchServers = () => {
+    setLoading(true);
+    setError(null);
+    fetch("http://localhost:8000/api/servers")
+      .then((res) => {
+        if (!res.ok) throw new Error("دریافت اطلاعات با خطا مواجه شد");
+        return res.json();
+      })
+      .then((data) => {
+        setServers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "خطا در دریافت داده");
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchServers();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto pt-8">
-        <ServerList servers={servers} />
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-center">داشبورد مانیتورینگ سرور</h1>
+          <Link
+            href="/add-server"
+            className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+          >
+            افزودن سرور جدید
+          </Link>
+        </div>
+        {loading && <div className="mb-8 text-center">در حال دریافت اطلاعات...</div>}
+        {error && <div className="mb-8 text-center text-red-600">{error}</div>}
+        {!loading && !error && <ServerList servers={servers} />}
       </div>
     </div>
   );
